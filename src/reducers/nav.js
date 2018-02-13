@@ -1,5 +1,5 @@
 
-import { AppNavigator } from '../navigators/AppNavigator';
+import { AppNavigator } from '../navigators/AppWithNavigationState';
 import { NavigationActions } from 'react-navigation';
 
 
