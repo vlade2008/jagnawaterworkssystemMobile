@@ -10,9 +10,12 @@ const firstAction = AppNavigator.router.getActionForPathAndParams('Main');
 const tempNavState = AppNavigator.router.getStateForAction(firstAction);
 const secondAction = AppNavigator.router.getActionForPathAndParams('Login');
 const initialNavState = AppNavigator.router.getStateForAction(
-  secondAction,
-  tempNavState
+  secondAction
 );
+// const initialNavState = AppNavigator.router.getStateForAction(
+//   secondAction,
+//   tempNavState
+// );
 
 export default function nav(state = initialNavState, action) {
   let nextState;

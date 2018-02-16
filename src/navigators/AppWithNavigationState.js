@@ -14,6 +14,27 @@ export const AppNavigator = StackNavigator({
   Profile: { screen: ProfileScreen },
 });
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 class AppWithNavigationState extends React.Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
