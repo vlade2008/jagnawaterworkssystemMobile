@@ -1,11 +1,32 @@
-const initialAuthState = { isLoggedIn: false };
+import update from 'react-addons-update';
+const initialAuthState = {
+  isLoggedIn: false,
+  activeAuth:{}
+};
 
 export default function auth(state = initialAuthState, action) {
   switch (action.type) {
+
     case 'Login':
-      return { ...state, isLoggedIn: true };
+      return update(state,{
+          isLoggedIn:{
+              $set:true
+          },
+          activeAuth:{
+            $set:action.data
+          }
+      });
+
     case 'Logout':
-      return { ...state, isLoggedIn: false };
+      return update(state,{
+          isLoggedIn:{
+              $set:false
+          },
+          activeAuth:{
+            $set:{}
+          }
+      });
+      
     default:
       return state;
   }

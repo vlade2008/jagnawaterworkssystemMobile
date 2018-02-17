@@ -2,46 +2,39 @@ import axios from 'axios'
 import _ from 'lodash'
 import { AsyncStorage } from 'react-native'
 
-export const setHost = (host) =>{
-  return host
+
+let host = null
+let api_key = null
+
+export const setHost = url => {
+	host = url
 }
 
-async function getApiKey() {
-	const value = await AsyncStorage.getItem('api_key')
-	let response
-	if (value !== null) {
-		response = value
-	}
-
-	return response
+export const setApiKey = key => {
+	api_key = key
 }
 
-export const gethost = (host) =>{
+export const gethost = () =>{
   return `http://${host}:8080`
 }
 
 
-export const get = (path, config = {}) =>
-	new Promise((resolve, reject) => {
-		getAuthorization()
-			.then(apikey => {
-				const payload = Object.assign(config, {
-					headers: {
-						'Content-Type': 'application/json;charset=UTF-8',
-            'Authorization':apikey
-					},
-				})
 
-				axios
-					.get(`${gethost()}${path}`, payload)
-					.then(response => {
-						resolve(response)
-					})
-					.catch(error => {
-						reject(error)
-					})
-			})
-			.catch(error => {
-				reject(error)
-			})
-	})
+
+export const instance = () =>{
+
+  let instance = axios.create({
+    baseURL: gethost(),
+    timeout: 1000,
+    headers:{
+      'Content-Type': 'application/json;charset=UTF-8',
+			'Authorization':api_key
+    }
+  })
+  return instance
+
+}
+
+export const get = (path, config) => {
+  return instance().get(path, config)
+}
