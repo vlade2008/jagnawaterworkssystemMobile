@@ -38,3 +38,42 @@ export const instance = () =>{
 export const get = (path, config) => {
   return instance().get(path, config)
 }
+
+
+// async function getAuthorization() {
+// 	const value = await AsyncStorage.getItem('api_key')
+// 	let response
+// 	if (value !== null) {
+// 		response = value
+// 	}
+//
+// 	return response
+// }
+
+
+
+
+// export const get = (path, config = {}) =>
+// 	new Promise((resolve, reject) => {
+// 		getAuthorization()
+// 			.then(apikey => {
+// 				const payload = Object.assign(config, {
+// 					headers: {
+// 						'Content-Type': 'application/json;charset=UTF-8',
+//             'Authorization':apikey
+// 					},
+// 				})
+//
+// 				axios
+// 					.get(`${gethost()}${path}`, payload)
+// 					.then(response => {
+// 						resolve(response)
+// 					})
+// 					.catch(error => {
+// 						reject(error)
+// 					})
+// 			})
+// 			.catch(error => {
+// 				reject(error)
+// 			})
+// 	})
