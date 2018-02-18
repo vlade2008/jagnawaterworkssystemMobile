@@ -43,6 +43,16 @@ const ReadingSchemaObject = {
   }
 }
 
+const BillSchemaObject = {
+  name: 'bill',
+  primaryKey: 'id',
+  properties: {
+    id: {type: 'int', default: ''},
+    current_reading: {type: 'int', default: ''},
+    account_no: {type: 'int', default: ''}
+  }
+}
+
 
 class ReadingSchema extends Realm.Object {}
 ReadingSchema.schema = ReadingSchemaObject;
@@ -53,4 +63,8 @@ UserPrivilegesSchema.schema = UserPrivilegesSchemaObject;
 class ConsumersSchema extends Realm.Object {}
 ConsumersSchema.schema = ConsumersSchemaObject;
 
-export default new Realm({schema: [UserPrivilegesSchema,ConsumersSchema,ReadingSchema]});
+
+class BillSchema extends Realm.Object {}
+BillSchema.schema = BillSchemaObject;
+
+export default new Realm({schema: [UserPrivilegesSchema,ConsumersSchema,ReadingSchema,BillSchema]});

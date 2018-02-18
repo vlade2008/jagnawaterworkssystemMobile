@@ -44,6 +44,7 @@ class ReadingList extends Component {
 
   onRefresh = () =>{
     this.props.authAction.getReading(this.state.status);
+    this.props.authAction.getBill(this.state.status)
   }
 
 

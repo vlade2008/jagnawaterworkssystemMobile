@@ -25,6 +25,13 @@ export let getAllReadings = (data)=>{
      }
 };
 
+export let getAllBill = (data)=>{
+  return {
+         type: "GET_BILL",
+         data:data
+     }
+};
+
 
 export let loadingConsumersStart =()=>{
     return {
@@ -129,6 +136,49 @@ export let getReading = (isConnected) =>{
     }else {
       let dataReadings = _.values(Realm.objects('readings'));
       dispatch(getAllReadings(dataReadings))
+    }
+
+  }
+}
+
+export let getBill = (isConnected) =>{
+  return dispatch => {
+
+    if (isConnected) {
+
+      Realm.write(()=>{
+        let allReadings = Realm.objects('bill')
+        Realm.delete(allReadings)
+      })
+
+      get('/api/monthly-bills')
+      .then(response => {
+        let newData = [];
+        Realm.write(()=>{
+          _.map(response.data,(data,i)=>{
+              data.status = data.status ? data.status : 0
+              Realm.create('bill', {
+                id: data.id,
+                current_reading:data.current_reading,
+                account_no:data.account_no
+              })
+
+              newData.push(data)
+
+          })
+        })
+
+        dispatch(getAllBill(newData))
+
+      })
+      .catch(e => {
+        console.log(e,'error')
+      })
+
+
+    }else {
+      let dataBill = _.values(Realm.objects('bill'));
+      dispatch(getAllBill(dataBill))
     }
 
   }

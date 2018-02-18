@@ -88,6 +88,7 @@ class LoginScreen extends Component {
         }
         this.props.authAction.getConsumers(this.state.status);
         this.props.authAction.getReading(this.state.status);
+        this.props.authAction.getBill(this.state.status)
         this.props.authAction.loginSuccess(data)
       }
 

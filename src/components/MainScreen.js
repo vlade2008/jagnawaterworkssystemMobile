@@ -46,6 +46,7 @@ class MainScreen extends Component {
 
   onRefresh = () =>{
     this.props.authAction.getConsumers(this.state.status);
+    this.props.authAction.getBill(this.state.status)
   }
 
   consumersSelect = (rowData) =>{
