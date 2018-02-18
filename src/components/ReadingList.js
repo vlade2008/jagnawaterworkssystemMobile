@@ -53,15 +53,15 @@ class ReadingList extends Component {
       <Item multipleLine>
         <Flex>
           <Flex.Item>
-            <View>
+            <View style={{justifyContent: 'center',alignItems: 'center'}}>
               <Text style={{ color: 'gray' }}>Date</Text>
               <WhiteSpace/>
-              <Text>{moment(rowData.reading_date).format('YYYY/MM/DD')}</Text>
+              <Text >{moment(rowData.reading_date).format('YYYY/MM/DD')}</Text>
             </View>
           </Flex.Item>
           <WhiteSpace/>
           <Flex.Item>
-            <View>
+            <View style={{justifyContent: 'center',alignItems: 'center'}}>
               <Text style={{ color: 'gray' }}>Previous</Text>
               <WhiteSpace/>
               <Text>{rowData.previous_reading}</Text>
@@ -69,7 +69,7 @@ class ReadingList extends Component {
            </Flex.Item>
            <WhiteSpace/>
           <Flex.Item>
-            <View>
+            <View style={{justifyContent: 'center',alignItems: 'center'}}>
               <Text style={{ color: 'gray' }}>Current</Text>
               <WhiteSpace/>
               <Text>{rowData.current_reading}</Text>
@@ -77,7 +77,7 @@ class ReadingList extends Component {
            </Flex.Item>
            <WhiteSpace/>
           <Flex.Item>
-            <View>
+            <View style={{justifyContent: 'center',alignItems: 'center'}}>
               <Text style={{ color: 'gray' }}>Status</Text>
               <WhiteSpace/>
               <Text><Icon type={rowData.status == 1 ? '\ue630' : '\ue62e'} color={rowData.status == 1 ? '#21b68a':'#f96268'} /></Text>
@@ -89,7 +89,7 @@ class ReadingList extends Component {
     )
   }
 
-  _keyExtractor = (item, index) => item.id
+  _keyExtractor = (item, index) => index
 
 
   onInputSearch = (value) =>{

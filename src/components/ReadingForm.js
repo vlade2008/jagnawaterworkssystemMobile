@@ -8,8 +8,9 @@ import { gethost } from '../utils/rest'
 import Realm from '../datastore'
 import _ from 'lodash'
 import * as authAction from '../actions/authAction';
-import { List,SearchBar,Flex ,WhiteSpace,Icon,WingBlank ,InputItem,Button,DatePicker,Modal} from 'antd-mobile'
+import { List,SearchBar,Flex ,WhiteSpace,Icon,WingBlank ,InputItem,Button,DatePicker,Modal,Toast} from 'antd-mobile'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import moment from 'moment'
 const { Item } = List
 const Brief = Item.Brief;
 
@@ -21,7 +22,9 @@ class ReadingForm extends Component {
 
     let bill =  _.filter(this.props.bill.records, { 'account_no': this.props.navigation.state.params });
     this.state = {
-      previous_reading:!_.isEmpty(bill) ? bill[0].current_reading : 0
+      previous_reading:!_.isEmpty(bill) ? bill[0].current_reading : 0,
+      isNotBill:_.isEmpty(bill) ? true : false,
+      billID:!_.isEmpty(bill) ? bill[0].id : {},
     }
   }
 
@@ -53,9 +56,26 @@ class ReadingForm extends Component {
   onSubmit = () =>{
     this.props.form.validateFields((err, values) => {
 			if (!err) {
-        console.log(values);
+        let idInitial = this.props.readings.records.length + 2;
+        let billInitialId = this.props.bill.records.length + 2;
+        
+        values.current_reading = parseInt(values.current_reading)
+        values.meter_number = parseInt(values.meter_number)
+        values.previous_reading = parseInt(values.previous_reading)
+        values.reading_date = moment().format()
+        values.read_by = this.props.auth.activeAuth.id
+        values.account_no = this.props.navigation.state.params
+
+        this.props.authAction.insertReading(this.state.billID,billInitialId,this.state.isNotBill,idInitial,this.state.status,values,()=>{
+          Toast.success('Record success !!!', 1);
+          this.props.authAction.getConsumers(this.state.status);
+          this.props.authAction.getReading(this.state.status);
+          this.props.authAction.getBill(this.state.status)
+          this.props.navigation.goBack();
+        })
+
 			} else {
-        Modal.alert('Warning', 'Please fill up required form', [
+        Modal.alert('Warning', 'Please fill up required form and check the Previous Reading', [
 					{ text: 'OK', onPress: () => console.log('ok'), style: 'default' },
 				])
 			}
@@ -80,11 +100,10 @@ class ReadingForm extends Component {
 						rules: [
 							{
 								required: true,
-								type: 'string',
 								message: 'Service Period End!',
 							},
 						],
-					})(<InputItem autoCorrect={false} placeholder="Service Period End" />)}
+					})(<InputItem  type={'string'} autoCorrect={false} placeholder="Service Period End" />)}
           <WhiteSpace size={'lg'} />
 
           <WingBlank>
@@ -148,7 +167,9 @@ class ReadingForm extends Component {
 
 function mapStateToProps(state) {
     return {
-      bill:state.bill
+      bill:state.bill,
+      auth:state.auth,
+      readings:state.readings
     }
 }
 

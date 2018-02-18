@@ -3,7 +3,8 @@ import update from 'react-addons-update';
 const INITIAL_STATE = {
     records:[],
     activeRecord:{},
-    loading:false
+    loading:false,
+    syncLoad:false
 };
 
 export default function consumers(state = INITIAL_STATE, action = {}) {
@@ -23,6 +24,20 @@ export default function consumers(state = INITIAL_STATE, action = {}) {
                  $set:false
              }
          });
+
+         case 'SYNC_START':
+          return update(state,{
+              syncLoad:{
+                  $set:true
+              }
+          });
+
+          case 'SYNC_END':
+          return update(state,{
+              syncLoad:{
+                  $set:false
+              }
+          });
 
         case 'GET_CONSUMERS':
           if(action.data == 'clear'){

@@ -30,7 +30,6 @@ const ConsumersSchemaObject = {
 
 const ReadingSchemaObject = {
   name: 'readings',
-  primaryKey: 'id',
   properties: {
     id: {type: 'int', default: ''},
     service_period_end: {type: 'string', default: ''},

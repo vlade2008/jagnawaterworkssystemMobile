@@ -1,8 +1,9 @@
 import Realm from '../datastore'
 import axios from 'axios'
-import { get } from '../utils/rest'
+import { get,post } from '../utils/rest'
 import _ from 'lodash'
 import moment from 'moment'
+import Promise from 'bluebird'
 
 export let loginSuccess = (data)=>{
   return {
@@ -44,11 +45,22 @@ export let loadingConsumersEnd =()=>{
     }
 };
 
+export let SyncStart =()=>{
+    return {
+        type: 'SYNC_START'
+    }
+};
+export let SyncEnd =()=>{
+    return {
+        type: 'SYNC_END'
+    }
+};
+
 export let getConsumers = (isConnected) =>{
   return dispatch => {
 
     dispatch(loadingConsumersStart())
-    if (isConnected) {
+    if (false) {
 
       Realm.write(()=>{
         let allConsumers = Realm.objects('consumers')
@@ -87,8 +99,22 @@ export let getConsumers = (isConnected) =>{
 
     }else {
       dispatch(loadingConsumersEnd())
-      let dataConsumers = _.values(Realm.objects('consumers'));
-      dispatch(getAllConsumers(dataConsumers))
+
+      let dataRealm = Array.from(Realm.objects('consumers'))
+
+      let loadData = _.map(dataRealm,(data,i)=>{
+        let values = {};
+          values.account_no = data.account_no
+          values.address = data.address
+          values.fname = data.fname
+          values.lname = data.lname
+          values.meter_number = data.meter_number
+          values.mname = data.mname
+          values.fullname = data.fullname
+        return values
+      })
+
+      dispatch(getAllConsumers(dataRealm))
     }
   }
 }
@@ -134,8 +160,25 @@ export let getReading = (isConnected) =>{
 
 
     }else {
-      let dataReadings = _.values(Realm.objects('readings'));
-      dispatch(getAllReadings(dataReadings))
+
+      let dataRealm = Array.from(Realm.objects('readings'))
+
+      let loadData = _.map(dataRealm,(data,i)=>{
+        let values = {};
+          values.id = data.id,
+          values.service_period_end = data.service_period_end
+          values.account_no = data.account_no
+          values.reading_date = data.reading_date
+          values.meter_number = data.meter_number
+          values.current_reading = data.current_reading
+          values.previous_reading = data.previous_reading
+          values.status = data.status
+        return values
+      })
+
+      dispatch(getAllReadings(dataRealm))
+
+
     }
 
   }
@@ -147,8 +190,8 @@ export let getBill = (isConnected) =>{
     if (isConnected) {
 
       Realm.write(()=>{
-        let allReadings = Realm.objects('bill')
-        Realm.delete(allReadings)
+        let allBill = Realm.objects('bill')
+        Realm.delete(allBill)
       })
 
       get('/api/monthly-bills')
@@ -177,8 +220,20 @@ export let getBill = (isConnected) =>{
 
 
     }else {
-      let dataBill = _.values(Realm.objects('bill'));
-      dispatch(getAllBill(dataBill))
+
+      let dataRealm = Array.from(Realm.objects('bill'))
+
+      let loadData = _.map(dataRealm,(data,i)=>{
+        let values = {};
+          values.id = data.id,
+          values.current_reading = data.current_reading
+          values.account_no = data.account_no
+        return values
+      })
+
+      dispatch(getAllBill(dataRealm))
+
+
     }
 
   }
@@ -193,5 +248,115 @@ export let insertUser = (data) =>{
             password:data.password
           })
     })
+  }
+}
+
+export let insertReading = (billID,billInitialId,isNotBill,idInitial,isConnected,payload,callback = null) =>{
+  return dispatch => {
+
+
+    if (isConnected) {
+      payload.status = true
+      post('/api/readings',payload)
+        .then(response => {
+          Realm.write(()=>{
+                Realm.create('readings', {
+                  id: response.data.id,
+                  service_period_end:response.data.service_period_end,
+                  account_no:response.data.account_no,
+                  reading_date:new Date(moment(response.data.reading_date).format('YYYY/MM/DD')),
+                  meter_number:response.data.meter_number,
+                  current_reading:response.data.current_reading,
+                  previous_reading:response.data.previous_reading,
+                  status:1
+                })
+            })
+          if (callback) {
+            dispatch(callback)
+          }
+        })
+        .catch(e => {
+          console.log(e,'error')
+        })
+
+    }else {
+
+      Realm.write(()=>{
+
+
+            payload.status = 0
+            Realm.create('readings', {
+              id: idInitial,
+              service_period_end:payload.service_period_end,
+              account_no:payload.account_no,
+              reading_date:new Date(moment(payload.reading_date).format('YYYY/MM/DD')),
+              meter_number:payload.meter_number,
+              current_reading:payload.current_reading,
+              previous_reading:payload.previous_reading,
+              status:0
+            })
+
+            if (isNotBill) {
+              Realm.create('bill', {
+                id: billInitialId,
+                current_reading:payload.current_reading,
+                account_no:payload.account_no
+              })
+            }else {
+              Realm.create('bill', {
+                id: billID,
+                current_reading:payload.current_reading
+              },true)
+            }
+
+
+
+
+        })
+        if (callback) {
+          dispatch(callback)
+        }
+
+    }
+
+  }
+}
+
+export let SyncAllReading = (isConnected,data,callback = null) =>{
+  return dispatch => {
+
+
+    let readingsData = _.filter(data,{ 'status': 0});
+    if (!_.isEmpty(readingsData) && isConnected) {
+      dispatch(SyncStart())
+
+
+
+      _.map(readingsData,(payload,i)=>{
+          delete payload.id;
+          payload.status = true
+          post('/api/readings',payload)
+            .then(response => {
+              console.log('proccess');
+            })
+            .catch(e => {
+              console.log(e,'error')
+            })
+
+      })
+
+      dispatch(SyncEnd())
+      if (callback) {
+        dispatch(callback)
+      }
+
+    }else {
+      if (callback) {
+        dispatch(callback)
+      }
+      dispatch(getReading(isConnected))
+    }
+
+
   }
 }

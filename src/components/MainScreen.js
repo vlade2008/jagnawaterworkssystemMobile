@@ -8,7 +8,7 @@ import { gethost } from '../utils/rest'
 import Realm from '../datastore'
 import _ from 'lodash'
 import * as authAction from '../actions/authAction';
-import { List,Text,SearchBar } from 'antd-mobile'
+import { List,Text,SearchBar,ActivityIndicator,Toast } from 'antd-mobile'
 const { Item } = List
 const Brief = Item.Brief;
 
@@ -50,8 +50,11 @@ class MainScreen extends Component {
   }
 
   consumersSelect = (rowData) =>{
-     this.props.authAction.getReading(this.state.status);
-     this.props.navigation.navigate('Reading',rowData.account_no)
+     this.props.authAction.SyncAllReading(this.state.status,this.props.readings.records,()=>{
+       Toast.success('Success Updated!!!', 1);
+       this.props.navigation.navigate('Reading',rowData.account_no)
+     });
+
   }
 
 
@@ -78,10 +81,13 @@ class MainScreen extends Component {
 
   render(){
 
-    console.log(this.props.auth);
     return(
       <View style={{flex:1}}>
-
+        <ActivityIndicator
+            toast
+            text="Loading..."
+            animating={this.props.consumers.syncLoad}
+          />
         <SearchBar
            value={this.state.value}
            placeholder="Search"
@@ -109,7 +115,8 @@ class MainScreen extends Component {
 function mapStateToProps(state) {
     return {
       consumers:state.consumers,
-      auth:state.auth
+      auth:state.auth,
+      readings:state.readings
     }
 }
 

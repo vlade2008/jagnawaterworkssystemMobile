@@ -11,6 +11,9 @@ import ReadingList from '../components/ReadingList';
 import ReadingForm from '../components/ReadingForm';
 import { addListener } from '../utils/redux';
 
+
+import SyncButton from '../components/SyncButton'
+
 import {Modal} from 'antd-mobile'
 const alert = Modal.alert;
 
@@ -32,20 +35,23 @@ export const AppNavigator = StackNavigator({
   Reading: {
     screen: ReadingList ,
     navigationOptions: ({navigation}) => ({
-           title: 'Reading',
+           title: 'Reading'
        })
   },
   ReadingForm: {
     screen: ReadingForm ,
     navigationOptions: ({navigation}) => ({
-           title: 'New Reading',
+           title: 'New Reading'
        })
   },
   Main: {
      screen: MainScreen,
      navigationOptions: ({navigation}) => ({
             title: 'Consumers',
-            headerLeft: null,
+            headerTintColor: 'white',
+            headerLeft:(
+              <SyncButton navigation={navigation} />
+            ),
             headerRight: (
                 <TouchableOpacity
                     style={{paddingHorizontal: 10}}
@@ -56,12 +62,21 @@ export const AppNavigator = StackNavigator({
                        ])
                     }}
                     >
-                    <Text style={{fontSize: 18}}>Logout</Text>
+                    <Text style={{fontSize: 18,color: '#fff'}}>Logout</Text>
                 </TouchableOpacity>
             )
         })
     },
   Profile: { screen: ProfileScreen },
+},{
+  navigationOptions:{
+    headerStyle: {
+      backgroundColor: '#2f54eb'
+     },
+    statusBarStyle: 'light',
+    headerTintColor: 'white',
+  }
+
 });
 
 

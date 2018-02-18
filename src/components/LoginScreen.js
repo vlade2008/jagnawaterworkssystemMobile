@@ -35,7 +35,7 @@ class LoginScreen extends Component {
       username:'admin',
       password:'password',
       count:0,
-      host:'localhost'
+      host:'192.168.254.103'
 
     }
   }
@@ -61,7 +61,6 @@ class LoginScreen extends Component {
 
 
   onLogin = () =>{
-    setHost('localhost')
     axios.get(gethost()+'/userApi/login', {
       params:{
               username:this.state.username,
@@ -87,7 +86,9 @@ class LoginScreen extends Component {
           this.props.authAction.insertUser(data);
         }
         this.props.authAction.getConsumers(this.state.status);
-        this.props.authAction.getReading(this.state.status);
+        this.props.authAction.getReading(this.state.status,this.state.readings,()=>{
+          Toast.success('Updated!!!', 1);
+        });
         this.props.authAction.getBill(this.state.status)
         this.props.authAction.loginSuccess(data)
       }
@@ -116,7 +117,8 @@ class LoginScreen extends Component {
   }
 
   onSubmit =() =>{
-    if (!_.isEmpty(this.state.username) || !_.isEmpty(this.state.password)) {
+    setHost(this.state.host)
+    if (!_.isEmpty(this.state.username) && !_.isEmpty(this.state.password)) {
       if (this.state.status) {
         this.onLogin();
       }else {
@@ -215,6 +217,7 @@ class LoginScreen extends Component {
 
 function mapStateToProps(state) {
     return {
+      readings:state.readings
     }
 }
 
