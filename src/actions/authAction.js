@@ -60,7 +60,7 @@ export let getConsumers = (isConnected) =>{
   return dispatch => {
 
     dispatch(loadingConsumersStart())
-    if (false) {
+    if (isConnected) {
 
       Realm.write(()=>{
         let allConsumers = Realm.objects('consumers')
@@ -114,7 +114,7 @@ export let getConsumers = (isConnected) =>{
         return values
       })
 
-      dispatch(getAllConsumers(dataRealm))
+      dispatch(getAllConsumers(loadData))
     }
   }
 }
@@ -143,7 +143,8 @@ export let getReading = (isConnected) =>{
                 meter_number:data.meter_number,
                 current_reading:data.current_reading,
                 previous_reading:data.previous_reading,
-                status:data.status
+                status:data.status,
+                read_by:data.read_by
               })
 
               newData.push(data)
@@ -173,10 +174,11 @@ export let getReading = (isConnected) =>{
           values.current_reading = data.current_reading
           values.previous_reading = data.previous_reading
           values.status = data.status
+          values.read_by = data.read_by
         return values
       })
 
-      dispatch(getAllReadings(dataRealm))
+      dispatch(getAllReadings(loadData))
 
 
     }
@@ -231,7 +233,7 @@ export let getBill = (isConnected) =>{
         return values
       })
 
-      dispatch(getAllBill(dataRealm))
+      dispatch(getAllBill(loadData))
 
 
     }
@@ -268,7 +270,8 @@ export let insertReading = (billID,billInitialId,isNotBill,idInitial,isConnected
                   meter_number:response.data.meter_number,
                   current_reading:response.data.current_reading,
                   previous_reading:response.data.previous_reading,
-                  status:1
+                  status:1,
+                  read_by:response.data.read_by
                 })
             })
           if (callback) {
@@ -293,7 +296,8 @@ export let insertReading = (billID,billInitialId,isNotBill,idInitial,isConnected
               meter_number:payload.meter_number,
               current_reading:payload.current_reading,
               previous_reading:payload.previous_reading,
-              status:0
+              status:0,
+              read_by:payload.read_by
             })
 
             if (isNotBill) {
@@ -322,40 +326,62 @@ export let insertReading = (billID,billInitialId,isNotBill,idInitial,isConnected
   }
 }
 
-export let SyncAllReading = (isConnected,data,callback = null) =>{
+export let SyncAllReading = (isConnected,callback = null) =>{
   return dispatch => {
 
+    let dataRealm = Array.from(Realm.objects('readings'))
 
-    let readingsData = _.filter(data,{ 'status': 0});
-    if (!_.isEmpty(readingsData) && isConnected) {
-      dispatch(SyncStart())
+    let loadData = _.map(dataRealm,(data,i)=>{
+      let values = {};
+        values.id = data.id,
+        values.service_period_end = data.service_period_end
+        values.account_no = data.account_no
+        values.reading_date = moment(data.reading_date).format()
+        values.meter_number = data.meter_number
+        values.current_reading = data.current_reading
+        values.previous_reading = data.previous_reading
+        values.status = data.status
+        values.read_by = data.read_by
+      return values
+    })
 
 
+    let readingsData = _.filter(loadData,{ 'status': 0});
+    if (isConnected) {
+      if (!_.isEmpty(readingsData)) {
+        dispatch(SyncStart())
 
-      _.map(readingsData,(payload,i)=>{
-          delete payload.id;
-          payload.status = true
-          post('/api/readings',payload)
-            .then(response => {
-              console.log('proccess');
-            })
-            .catch(e => {
-              console.log(e,'error')
-            })
+        _.map(readingsData,(payload,i)=>{
+            delete payload.id;
+            payload.status = true
+            post('/api/readings',payload)
+              .then(response => {
+                console.log('proccess');
+              })
+              .catch(e => {
+                console.log(e,'error')
+              })
 
-      })
+        })
+        dispatch(getReading(isConnected))
+        dispatch(SyncEnd())
+        if (callback) {
+          dispatch(callback)
+        }
 
-      dispatch(SyncEnd())
-      if (callback) {
-        dispatch(callback)
+
+      }else {
+        dispatch(getReading(isConnected))
+        // if (callback) {
+        //   dispatch(callback)
+        // }
       }
-
     }else {
-      if (callback) {
-        dispatch(callback)
-      }
-      dispatch(getReading(isConnected))
+      dispatch(getReading(false))
     }
+
+
+
 
 
   }

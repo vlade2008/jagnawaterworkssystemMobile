@@ -38,7 +38,8 @@ const ReadingSchemaObject = {
     meter_number: {type: 'int', default: ''},
     current_reading:{type:'int',default:''},
     previous_reading:{type:'int',default:''},
-    status:{type:'int',default:''}
+    status:{type:'int',default:''},
+    read_by:{type:'int',default:''}
   }
 }
 

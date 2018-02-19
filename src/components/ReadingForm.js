@@ -58,7 +58,7 @@ class ReadingForm extends Component {
 			if (!err) {
         let idInitial = this.props.readings.records.length + 2;
         let billInitialId = this.props.bill.records.length + 2;
-        
+
         values.current_reading = parseInt(values.current_reading)
         values.meter_number = parseInt(values.meter_number)
         values.previous_reading = parseInt(values.previous_reading)

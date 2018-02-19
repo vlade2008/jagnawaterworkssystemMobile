@@ -47,14 +47,13 @@ class MainScreen extends Component {
   onRefresh = () =>{
     this.props.authAction.getConsumers(this.state.status);
     this.props.authAction.getBill(this.state.status)
+    this.props.authAction.SyncAllReading(this.state.status,()=>{
+      Toast.success('Success Updated!!!', 1);
+    })
   }
 
   consumersSelect = (rowData) =>{
-     this.props.authAction.SyncAllReading(this.state.status,this.props.readings.records,()=>{
-       Toast.success('Success Updated!!!', 1);
-       this.props.navigation.navigate('Reading',rowData.account_no)
-     });
-
+     this.props.navigation.navigate('Reading',rowData.account_no)
   }
 
 
@@ -80,7 +79,6 @@ class MainScreen extends Component {
 
 
   render(){
-
     return(
       <View style={{flex:1}}>
         <ActivityIndicator

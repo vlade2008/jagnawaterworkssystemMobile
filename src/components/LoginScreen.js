@@ -86,7 +86,7 @@ class LoginScreen extends Component {
           this.props.authAction.insertUser(data);
         }
         this.props.authAction.getConsumers(this.state.status);
-        this.props.authAction.getReading(this.state.status,this.state.readings,()=>{
+        this.props.authAction.SyncAllReading(this.state.status,()=>{
           Toast.success('Updated!!!', 1);
         });
         this.props.authAction.getBill(this.state.status)

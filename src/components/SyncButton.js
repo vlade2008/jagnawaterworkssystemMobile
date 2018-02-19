@@ -81,8 +81,12 @@ class SyncButton extends PureComponent {
           Toast.fail(response.data.message, 1);
       }else {
         setApiKey(response.data.api_key)
-        this.props.authAction.dispatch(SyncStart())(this.state.status,this.props.readings.records,()=>{
+        this.props.authAction.SyncAllReading(this.state.status,()=>{
+          this.props.authAction.getReading(this.state.status)
+          this.props.authAction.getBill(this.state.status)
+          this.props.authAction.getConsumers(this.state.status)
           Toast.success('Success Updated!!!', 1);
+
         })
 
 
