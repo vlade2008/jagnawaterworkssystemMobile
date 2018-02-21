@@ -35,7 +35,7 @@ class LoginScreen extends Component {
       username:'admin',
       password:'password',
       count:0,
-      host:'192.168.254.103'
+      host:''
 
     }
   }
