@@ -76,6 +76,30 @@ class MainScreen extends Component {
   }
 
 
+onSubmit = () =>{
+  const searchText  = this.state.value;
+
+  if (_.isEmpty(searchText)) {
+    this.props.authAction.getConsumers(this.state.status)
+  }else {
+     const reg = new RegExp(searchText, 'gi');
+
+     let data = this.props.consumers.records.map((record,i)=>{
+       const match = record.fullname.match(reg);
+       if (!match) {
+         return null;
+       }
+       return {
+         ...record
+       }
+
+     }).filter(record => !!record)
+
+
+     this.props.authAction.getAllConsumers(data)
+  }
+}
+
 
 
   render(){
@@ -90,6 +114,7 @@ class MainScreen extends Component {
            value={this.state.value}
            placeholder="Search"
            onChange={this.onInputSearch}
+           onSubmit={this.onSubmit}
          />
         <FlatList
 					data={this.props.consumers.records}
