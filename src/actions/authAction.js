@@ -137,7 +137,7 @@ export let getReading = (isConnected) =>{
               data.status = data.status ? data.status : 0
               Realm.create('readings', {
                 id: data.id,
-                service_period_end:data.service_period_end,
+                // service_period_end:data.service_period_end,
                 account_no:data.account_no,
                 reading_date:new Date(moment(data.reading_date).format('YYYY/MM/DD')),
                 meter_number:data.meter_number,
@@ -167,7 +167,7 @@ export let getReading = (isConnected) =>{
       let loadData = _.map(dataRealm,(data,i)=>{
         let values = {};
           values.id = data.id,
-          values.service_period_end = data.service_period_end
+          // values.service_period_end = data.service_period_end
           values.account_no = data.account_no
           values.reading_date = data.reading_date
           values.meter_number = data.meter_number
@@ -264,7 +264,7 @@ export let insertReading = (billID,billInitialId,isNotBill,idInitial,isConnected
           Realm.write(()=>{
                 Realm.create('readings', {
                   id: response.data.id,
-                  service_period_end:response.data.service_period_end,
+                  // service_period_end:response.data.service_period_end,
                   account_no:response.data.account_no,
                   reading_date:new Date(moment(response.data.reading_date).format('YYYY/MM/DD')),
                   meter_number:response.data.meter_number,
@@ -290,7 +290,7 @@ export let insertReading = (billID,billInitialId,isNotBill,idInitial,isConnected
             payload.status = 0
             Realm.create('readings', {
               id: idInitial,
-              service_period_end:payload.service_period_end,
+              // service_period_end:payload.service_period_end,
               account_no:payload.account_no,
               reading_date:new Date(moment(payload.reading_date).format('YYYY/MM/DD')),
               meter_number:payload.meter_number,
@@ -334,7 +334,7 @@ export let SyncAllReading = (isConnected,callback = null) =>{
     let loadData = _.map(dataRealm,(data,i)=>{
       let values = {};
         values.id = data.id,
-        values.service_period_end = data.service_period_end
+        // values.service_period_end = data.service_period_end
         values.account_no = data.account_no
         values.reading_date = moment(data.reading_date).format()
         values.meter_number = data.meter_number

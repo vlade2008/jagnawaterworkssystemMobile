@@ -72,25 +72,34 @@ class LoginScreen extends Component {
       }else {
 
 
-        setApiKey(response.data.api_key)
+        if (_.includes(response.data.user.userlevel,'admin') || _.includes(response.data.user.userlevel,'reader') ) {
+          setApiKey(response.data.api_key)
 
-        let realmUser  = Realm.objects('user_privileges')
-        realmUser = _.values(realmUser);
-        let result = _.findIndex(realmUser,{ 'username': this.state.username, 'password':this.state.password});
+          let realmUser  = Realm.objects('user_privileges')
+          realmUser = _.values(realmUser);
+          let result = _.findIndex(realmUser,{ 'username': this.state.username, 'password':this.state.password});
 
-        let data = {};
-        data.id = response.data.user.id
-        data.username = this.state.username
-        data.password = this.state.password
-        if (result  == -1) {
-          this.props.authAction.insertUser(data);
+          let data = {};
+          data.id = response.data.user.id
+          data.username = this.state.username
+          data.password = this.state.password
+          if (result  == -1) {
+            this.props.authAction.insertUser(data);
+          }
+          this.props.authAction.getConsumers(this.state.status);
+          this.props.authAction.SyncAllReading(this.state.status,()=>{
+            Toast.success('Updated!!!', 1);
+          });
+          this.props.authAction.getBill(this.state.status)
+          this.props.authAction.loginSuccess(data)
+
+        }else {
+          Toast.fail('User not found', 1);
         }
-        this.props.authAction.getConsumers(this.state.status);
-        this.props.authAction.SyncAllReading(this.state.status,()=>{
-          Toast.success('Updated!!!', 1);
-        });
-        this.props.authAction.getBill(this.state.status)
-        this.props.authAction.loginSuccess(data)
+
+
+
+
       }
 
     }).catch((e) => {

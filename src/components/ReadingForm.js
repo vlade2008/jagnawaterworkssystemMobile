@@ -92,7 +92,7 @@ class ReadingForm extends Component {
     return(
       <View style={{flex:1,backgroundColor: '#fff'}}>
         <KeyboardAwareScrollView>
-          <WhiteSpace size={'lg'} />
+          {/* <WhiteSpace size={'lg'} />
           <WingBlank>
 						<Text style={{ fontSize: 20, fontWeight: 'bold' }}>Service Period End</Text>
 					</WingBlank>
@@ -103,7 +103,7 @@ class ReadingForm extends Component {
 								message: 'Service Period End!',
 							},
 						],
-					})(<InputItem  type={'string'} autoCorrect={false} placeholder="Service Period End" />)}
+					})(<InputItem  type={'string'} autoCorrect={false} placeholder="Service Period End" />)} */}
           <WhiteSpace size={'lg'} />
 
           <WingBlank>
