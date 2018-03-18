@@ -8,9 +8,10 @@ import { gethost } from '../utils/rest'
 import Realm from '../datastore'
 import _ from 'lodash'
 import * as authAction from '../actions/authAction';
-import { List,Text,SearchBar,ActivityIndicator,Toast } from 'antd-mobile'
+import { List,Text,SearchBar,ActivityIndicator,Toast,Flex } from 'antd-mobile'
 const { Item } = List
 const Brief = Item.Brief;
+import { computeSize } from '../utils/DeviceRatio'
 
 import { NavigationActions } from 'react-navigation'
 
@@ -60,7 +61,15 @@ class MainScreen extends Component {
   renderItem = (rowData) =>{
     return(
       <Item multipleLine onClick={() => this.consumersSelect(rowData)} >
-        {rowData.meter_number}<Brief>   {rowData.fullname}</Brief>
+        <Flex>
+          <Flex.Item>
+            <View>
+              <Text>ID: {rowData.meter_number}</Text>
+              <Text style={{ fontSize: computeSize(50) }}>{rowData.fullname}</Text>
+              <Brief>{rowData.address}</Brief>
+            </View>
+          </Flex.Item>
+        </Flex>
 
   		</Item>
     )
@@ -85,7 +94,7 @@ onSubmit = () =>{
      const reg = new RegExp(searchText, 'gi');
 
      let data = this.props.consumers.records.map((record,i)=>{
-       const match = record.fullname.match(reg);
+       const match = record.allFilter.match(reg);
        if (!match) {
          return null;
        }

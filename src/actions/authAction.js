@@ -74,6 +74,7 @@ export let getConsumers = (isConnected) =>{
         let newData = [];
         Realm.write(()=>{
           _.map(response.data,(data,i)=>{
+              data.allFilter = data.account_no.toString() + ' ' + data.lname + ' ' + data.fname + ' '+ data.mname +' '+ data.address
               data.fullname = data.lname+" "+data.fname+" "+data.mname;
               Realm.create('consumers', {
                 account_no: data.account_no,
@@ -87,6 +88,8 @@ export let getConsumers = (isConnected) =>{
               newData.push(data)
           })
         })
+
+
 
         dispatch(getAllConsumers(newData))
 
@@ -104,6 +107,7 @@ export let getConsumers = (isConnected) =>{
 
       let loadData = _.map(dataRealm,(data,i)=>{
         let values = {};
+          values.allFilter = data.account_no.toString() + ' ' + data.lname + ' ' + data.fname + ' '+ data.mname +' '+ data.address
           values.account_no = data.account_no
           values.address = data.address
           values.fname = data.fname

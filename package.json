@@ -28,7 +28,9 @@
     "rc-form": "^2.1.7",
     "react": "16.2.0",
     "react-addons-update": "^15.6.2",
+    "react-dom": "16.0.0",
     "react-native": "^0.52.0",
+    "react-native-device-detection": "^0.2.0",
     "react-native-keyboard-aware-scroll-view": "^0.4.3",
     "react-navigation": "^1.0.3",
     "react-navigation-redux-helpers": "^1.0.0",
@@ -36,8 +38,7 @@
     "realm": "^2.2.8",
     "redux": "^3.7.2",
     "redux-thunk": "^2.2.0",
-    "remote-redux-devtools": "^0.5.12",
-    "react-dom": "16.0.0"
+    "remote-redux-devtools": "^0.5.12"
   },
   "devDependencies": {
     "babel-jest": "^21.0.0",
