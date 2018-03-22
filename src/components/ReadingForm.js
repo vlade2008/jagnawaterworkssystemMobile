@@ -87,6 +87,8 @@ class ReadingForm extends Component {
 
   render(){
 
+    let consumers = _.filter(this.props.consumers.records, { 'account_no': this.props.navigation.state.params });
+
 		const { getFieldDecorator } = this.props.form
 
     return(
@@ -110,13 +112,14 @@ class ReadingForm extends Component {
 						<Text style={{ fontSize: 20, fontWeight: 'bold' }}>Meter Number</Text>
 					</WingBlank>
 					{getFieldDecorator('meter_number', {
+            initialValue:consumers[0].meter_number.toString(),
 						rules: [
 							{
 								required: true,
 								message: 'Meter Number!',
 							},
 						],
-					})(<InputItem  type={'number'} autoCorrect={false} placeholder={'Meter Number'} />)}
+					})(<InputItem  type={'number'} editable={false} autoCorrect={false} placeholder={'Meter Number'} />)}
           <WhiteSpace size={'lg'} />
           <WingBlank>
 						<Text style={{ fontSize: 20, fontWeight: 'bold' }}>Current Reading</Text>
@@ -169,7 +172,8 @@ function mapStateToProps(state) {
     return {
       bill:state.bill,
       auth:state.auth,
-      readings:state.readings
+      readings:state.readings,
+      consumers:state.consumers
     }
 }
 
