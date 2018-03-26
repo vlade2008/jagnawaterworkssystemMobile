@@ -1,5 +1,13 @@
-# Redux example
+# Jagnawaterworksystem Mobile App 
 
-## Usage
+## Installing
 
-Please see the [Contributors Guide](https://reactnavigation.org/docs/guides/contributors#Run-the-Example-App) for instructions on running these example apps.
+npm install
+react-native link
+
+## Run IOS& Android
+
+for android > react-native run-android
+for ios > react-native run-ios
+
+
